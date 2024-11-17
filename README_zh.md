@@ -1,12 +1,11 @@
 # MNN WebAssembly Integration
 
-## Project Introduction
+## 项目简介
 
-This project aims to use Emscripten to convert parts of [MNN](https://github.com/alibaba/MNN) to WebAssembly (WASM) for use in JavaScript environments. By converting MNN to WASM, deep learning models can be efficiently run in both browser and Node.js environments.
+本项目旨在利用 Emscripten 将 [MNN](https://github.com/alibaba/MNN) 部分转为 WebAssembly (WASM)，以便在 JavaScript 环境中调用。通过将 MNN 转为 WASM，可以在浏览器和 Node.js 环境中高效地运行深度学习模型。
 
-## Original Project Introduction
-
-This project is based on [Lite.Ai.ToolKit](https://github.com/DefTruth/lite.ai.toolkit). Lite.Ai.ToolKit is a lightweight AI toolkit designed to provide efficient and easy-to-use deep learning model inference capabilities. The toolkit supports multiple deep learning frameworks and model formats, suitable for various AI application scenarios.
+## 原始项目介绍
+本项目基于 [Lite.Ai.ToolKit](https://github.com/DefTruth/lite.ai.toolkit) 进行改造。Lite.Ai.ToolKit 是一个轻量级的 AI 工具包，旨在提供高效、易用的深度学习模型推理能力。该工具包支持多种深度学习框架和模型格式，适用于各种 AI 应用场景。
 <div align='center'>
   <img src='https://github.com/DefTruth/lite.ai.toolkit/assets/31974251/5b28aed1-e207-4256-b3ea-3b52f9e68aed' height="80px" width="80px">
   <img src='https://github.com/DefTruth/lite.ai.toolkit/assets/31974251/28274741-8745-4665-abff-3a384b75f7fa' height="80px" width="80px">
@@ -19,51 +18,51 @@ This project is based on [Lite.Ai.ToolKit](https://github.com/DefTruth/lite.ai.t
   <img src='https://github.com/DefTruth/lite.ai.toolkit/assets/31974251/ef0eeabe-6dbe-4837-9aad-b806a8398697' height="80px" width="80px">  
 </div> 
 
-## Features
+## 特性
 
-- Convert parts of MNN to WebAssembly, supporting calls in browser and Node.js environments.
-- Provide sample code demonstrating how to use the converted MNN model in JavaScript.
-- Support integration of OpenCV with MNN for image processing and model inference.
+- 将 MNN 部分 转为 WebAssembly，支持在浏览器和 Node.js 环境中调用。
+- 提供示例代码，展示如何在 JavaScript 中使用转换后的 MNN 模型。
+- 支持 OpenCV 与 MNN 的集成，便于图像处理和模型推理。
 
-## Directory Structure
+## 目录结构
 
 ```
 .
-├── CMakeLists.txt          # CMake configuration file for Emscripten
-├── README.md               # Project introduction
-├── lite                    # Code processed for MNN
+├── CMakeLists.txt          # Emscripten 的 CMake 配置文件
+├── README.md               # 项目简介
+├── lite                    # MNN 本次处理的代码
 │   ├── mnn
 │   │   ├── core
 │   │   │   └── mnn_handler.cpp
 │   │   └── cv
 │   │       └── mnn_age_googlenet.cpp
-├── thirdparty              # Third-party libraries
+├── thirdparty              # 第三方库
 │   ├── MNN
 │   └── opencv
-└── wasm-examples           # Example code for calling the converted code
+└── wasm-examples           # 转换后调用示例代码
     ├── mnn_age_googlenet.js
     └── mnn_age_googlenet.wasm
-    ├── test.js             # Node.js example code
-│   └── test_lite_age_googlenet.jpg  # Example image
+    ├── test.js             # Node.js 示例代码
+│   └── test_lite_age_googlenet.jpg  # 示例图像
 ```
 
-## Installation and Configuration
+## 安装与配置
 
-### Environment Preparation
+### 环境准备
 
-1. Install [Emscripten](https://emscripten.org/docs/getting_started/downloads.html).
-2. Install [OpenCV](https://opencv.org/) and [MNN](https://github.com/alibaba/MNN).
+1. 安装 [Emscripten](https://emscripten.org/docs/getting_started/downloads.html)。
+2. 安装 [OpenCV](https://opencv.org/) 和 [MNN](https://github.com/alibaba/MNN)。
 
-### Compilation Steps
+### 编译步骤
 
-1. Clone this project:
+1. 克隆本项目：
 
 ```sh
 git clone https://github.com/nibilin33/wasm.lite.ai.toolkit.git
 cd wasm.lite.ai.toolkit
 ```
 
-2. Compile OpenCV:
+2. 编译 OpenCV：
 
 ```sh
 cd thirdparty/opencv
@@ -73,7 +72,7 @@ emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -D
 emmake make install
 ```
 
-3. Compile MNN:
+3. 编译 MNN：
 
 ```sh
 cd thirdparty/MNN
@@ -83,7 +82,7 @@ emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
 emmake make
 ```
 
-4. Compile the project:
+4. 编译项目：
 
 ```sh
 mkdir build
@@ -92,20 +91,20 @@ emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
 emmake make
 ```
 
-## Usage Example
+## 使用示例
 
-### Node.js Example
+### Node.js 示例
 
-1. Install dependencies:
+1. 安装依赖：
 
 ```sh
 npm install opencv.js
 ```
 
-2. Run the example code:
+2. 运行示例代码：
 
 ```sh
 node examples/test.js
 ```
 
-The example code will load the MNN model and use OpenCV to process image data for age detection.
+示例代码将加载 MNN 模型，并使用 OpenCV 处理图像数据，进行年龄检测。

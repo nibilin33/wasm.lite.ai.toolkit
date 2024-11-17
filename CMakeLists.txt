@@ -1,82 +1,62 @@
 cmake_minimum_required(VERSION 3.10)
-project(lite.ai.toolkit)
-
-set(CMAKE_CXX_STANDARD 17)
-set(VERSION_STRING 0.2.0)
-set(SOVERSION_STRING 0.2.0)
-include(cmake/utils.cmake)
-
-if (NOT (UNIX AND NOT APPLE))
-  message(FATAL_ERROR "lite.ai.toolkit>=0.2 not support for windows/mac now!")
+project(MNNAgeGoogleNet)
+# 使用 Emscripten 工具链
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    set(CMAKE_CXX_COMPILER em++)
+    set(CMAKE_C_COMPILER emcc)
 endif()
 
-set(THIRD_PARTY_PATH "${CMAKE_SOURCE_DIR}/third_party")
-if(NOT EXISTS ${THIRD_PARTY_PATH})
-    file(MAKE_DIRECTORY ${THIRD_PARTY_PATH})
-endif()
+set(CMAKE_CXX_STANDARD 11)
+message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+set(THIRD_PARTY_PATH "${CMAKE_SOURCE_DIR}/thirdparty")
+include(FetchContent)
 
-if (CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "-std=c++17 -Wno-deprecated ${CMAKE_CXX_FLAGS} ")
-    message(STATUS "[Linux GCC Compiler Options]+:-std=c++17 -Wno-deprecated")
-endif ()
+function(download_and_decompress url filename dest)
+    file(DOWNLOAD ${url} ${CMAKE_BINARY_DIR}/${filename})
+    file(MAKE_DIRECTORY ${dest})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_BINARY_DIR}/${filename} WORKING_DIRECTORY ${dest})
+endfunction()
 
-set(LITE_AI_ROOT_DIR ${CMAKE_SOURCE_DIR})
+include(cmake/MNN.cmake)
+option(ENABLE_MNN "enable MNN engine" ON)
 
-option(ENABLE_TEST "build test examples." OFF)
-option(ENABLE_DEBUG_STRING "enable DEBUG string or not" ON)
-option(ENABLE_ONNXRUNTIME "enable ONNXRuntime engine" ON)
-option(ENABLE_TENSORRT "enable TensorRT engine" OFF)
-option(ENABLE_MNN "enable MNN engine" OFF)
-option(ENABLE_NCNN "enable NCNN engine" OFF) 
-option(ENABLE_TNN "enable TNN engine" OFF)
-option(ENABLE_ONNXRUNTIME_CUDA "enable ONNXRuntime engine with CUDA provider" OFF) # for future use
-option(ENABLE_OPENCV_VIDEOIO "enable opencv videoio modules for detect_video apis" ON) # now, ON only
+# 打印 ENABLE_MNN 选项的值
+message(STATUS "ENABLE_MNN: ${ENABLE_MNN}")
 
-if ((NOT ENABLE_ONNXRUNTIME) AND (NOT ENABLE_MNN))
-    message(FATAL_ERROR "One of ONNXRuntime/MNN Backend must be enable!")
-endif()
+# 设置包含路径
+include_directories(${CMAKE_SOURCE_DIR})
 
-if ((NOT ENABLE_ONNXRUNTIME) AND ENABLE_TEST)
-    set(ENABLE_TEST OFF CACHE BOOL "ENABLE_TEST" FORCE)
-    message(WARNING "Only support build tests while ONNXRuntime backend is enable, force ENABLE_TEST=OFF.")
-endif()
-
-include_directories(${LITE_AI_ROOT_DIR})
-configure_file(cmake/lite.ai.toolkit.cmake.in ${CMAKE_SOURCE_DIR}/cmake/lite.ai.toolkit.cmake @ONLY)
+# 手动指定 OpenCV 的安装路径
+set(OpenCV_DIR "${CMAKE_SOURCE_DIR}/thirdparty/opencv")
+set(OpenCV_INCLUDE_DIRS "${OpenCV_DIR}/include/opencv4")
+set(OpenCV_LIB_DIR "${OpenCV_DIR}/lib")
 
 include(cmake/opencv.cmake)
+# include_directories(${OpenCV_INCLUDE_DIRS})
+message(STATUS "OpenCV_INCLUDE_DIRS: ${OpenCV_INCLUDE_DIRS}")
+message(STATUS "OpenCV_LIBS: ${OpenCV_LIBS}")
 
-add_lite_ai_toolkit_shared_library(${VERSION_STRING} ${SOVERSION_STRING})
-install(TARGETS lite.ai.toolkit LIBRARY DESTINATION lib)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/lite 
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-        FILES_MATCHING
-        PATTERN "*.h")
-install(DIRECTORY ${THIRD_PARTY_PATH} DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(FILES ${CMAKE_SOURCE_DIR}/cmake/lite.ai.toolkit.cmake 
-        DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(FILES ${CMAKE_SOURCE_DIR}/cmake/lite.ai.toolkit-config.cmake 
-        DESTINATION ${CMAKE_INSTALL_PREFIX})
+# 打印 MNN_INCLUDE_DIRS 和 MNN_LIBRARIES 变量的值
+message(STATUS "MNN_INCLUDE_DIRS: ${MNN_INCLUDE_DIRS}")
+message(STATUS "MNN_LIBRARIES: ${MNN_LIBRARIES}")
 
-if (ENABLE_TEST)
-    set(EXECUTABLE_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin)
-    add_subdirectory(examples/lite)
-    if ((UNIX AND NOT APPLE))
-        file(GLOB_RECURSE ALL_THIRD_LIBS ${THIRD_PARTY_PATH} FOLLOW_SYMLINKS *.so*)
-        install(FILES ${ALL_THIRD_LIBS} DESTINATION ${EXECUTABLE_OUTPUT_PATH})
-    endif()
-endif ()
+# 添加源文件
+set(SOURCE_FILES ${CMAKE_SOURCE_DIR}/lite/mnn/cv/mnn_age_googlenet.cpp ${CMAKE_SOURCE_DIR}/lite/mnn/core/mnn_handler.cpp)
 
-message(STATUS "-------------------------- lite.ai.toolkit Configuration Summary --------------------------")
-message(STATUS "        Version: ${VERSION_STRING}")
-message(STATUS "     SO Version: ${SOVERSION_STRING}")
-message(STATUS "     Build Type: ${CMAKE_BUILD_TYPE}")
-message(STATUS "      Root Path: ${CMAKE_SOURCE_DIR}")
-message(STATUS "         OpenCV: ON Version: ${OpenCV_Version}")
-message(STATUS "    ONNXRUNTIME: ${ENABLE_ONNXRUNTIME} Version: ${OnnxRuntime_Version}")
-message(STATUS "       TENSORRT: ${ENABLE_TENSORRT} Version: ${TensorRT_Version}")
-message(STATUS "            MNN: ${ENABLE_MNN} Version: ${MNN_Version}")
-message(STATUS "           NCNN: ${ENABLE_NCNN} Version: ${NCNN_Version}")
-message(STATUS "            TNN: ${ENABLE_TNN} Version: ${TNN_Version}")
-message(STATUS "        INSTALL:  ${CMAKE_INSTALL_PREFIX}")
-message(STATUS "-------------------------- lite.ai.toolkit Configuration Summary --------------------------")
+
+# add_executable(MNNAgeGoogleNet ${SOURCE_FILES})
+# 编译成 WebAssembly
+add_executable(mnn_age_googlenet.js ${SOURCE_FILES})
+
+# 链接 MNN 和 OpenCV 库
+# target_link_libraries(MNNAgeGoogleNet ${MNN_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(mnn_age_googlenet.js ${MNN_LIBRARIES} ${OpenCV_LIBS} embind)
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    # 设置编译选项以生成 WASM 模块
+    set_target_properties(mnn_age_googlenet.js PROPERTIES
+        LINK_FLAGS "-s WASM=1 -s MODULARIZE=1 -s 'EXPORT_NAME=\"MNNAgeGoogleNetModule\"' \
+                    -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] -s ALLOW_MEMORY_GROWTH=1 -s ENVIRONMENT=node"
+        OUTPUT_NAME "mnn_age_googlenet"
+    )
+endif()
