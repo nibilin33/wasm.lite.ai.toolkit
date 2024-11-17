@@ -1,4 +1,5 @@
 set(OpenCV_Version "4.9.0-ffmpeg4.2.2" CACHE STRING "OpenCV version" FORCE)
+message(STATUS "THIRD_PARTY_PATH: ${THIRD_PARTY_PATH}")
 set(OpenCV_DIR ${THIRD_PARTY_PATH}/opencv)
 # download from github if opencv library is not exists
 if (NOT EXISTS ${OpenCV_DIR})

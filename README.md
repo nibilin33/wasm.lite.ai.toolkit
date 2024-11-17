@@ -82,8 +82,8 @@ git clone https://github.com/alibaba/MNN.git
 cd MNN
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make
+emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/xx/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake ..
+emmake make
 cp libMNN.dylib  /xx/thirdparty/MNN/lib/
 cp -r ../include /xx/thirdparty/MNN/
 ```
@@ -119,3 +119,10 @@ Detection Flag: true
 ```
 
 The example code will load the MNN model and use OpenCV to process image data for age detection.
+
+## Model Transfrom
+
+```sh
+pip install -U MNN
+mnnconvert -f ONNX --modelFile age_googlenet.onnx --MNNModel age_googlenet.mnn  --bizCode age_googlenet
+```

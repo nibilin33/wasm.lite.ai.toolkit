@@ -81,8 +81,8 @@ git clone https://github.com/alibaba/MNN.git
 cd MNN
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make
+emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/xx/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake ..
+emmake make
 cp libMNN.dylib  /xx/thirdparty/MNN/lib/
 cp -r ../include /xx/thirdparty/MNN/
 ```
@@ -116,3 +116,11 @@ Interval Probability: 0.27939242124557495
 Detection Flag: true
 ```
 示例代码将加载 MNN 模型，并使用 OpenCV 处理图像数据，进行年龄检测。
+
+
+## 模型转换
+
+```sh
+pip install -U MNN
+mnnconvert -f ONNX --modelFile age_googlenet.onnx --MNNModel age_googlenet.mnn  --bizCode age_googlenet
+```
