@@ -124,3 +124,6 @@ Detection Flag: true
 pip install -U MNN
 mnnconvert -f ONNX --modelFile age_googlenet.onnx --MNNModel age_googlenet.mnn  --bizCode age_googlenet
 ```
+
+## Emscripten bindings 学习
+[opencv](https://github.com/opencv/opencv/blob/4.x/modules/js/src/core_bindings.cpp)
