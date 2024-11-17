@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "jpeg-js": "^0.4.4",
+    "opencv.js": "^1.2.1"
+  }
+}

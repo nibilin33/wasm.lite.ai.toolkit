@@ -90,10 +90,7 @@ cp -r ../include /xx/thirdparty/MNN/
 4. 编译项目：
 
 ```sh
-mkdir build
-cd build
-emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
-emmake make
+sh ./build-wasm.sh
 ```
 
 ## 使用示例
@@ -103,13 +100,19 @@ emmake make
 1. 安装依赖：
 
 ```sh
+cd wasm-examples
 npm install opencv.js
 ```
 
 2. 运行示例代码：
 
 ```sh
-node examples/test.js
+node test.js
 ```
-
+```output result 
+Predicted Age: 28.5
+Age Interval: 25 32
+Interval Probability: 0.27939242124557495
+Detection Flag: true
+```
 示例代码将加载 MNN 模型，并使用 OpenCV 处理图像数据，进行年龄检测。

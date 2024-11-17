@@ -91,10 +91,7 @@ cp -r ../include /xx/thirdparty/MNN/
 4. Compile the project:
 
 ```sh
-mkdir build
-cd build
-emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
-emmake make
+sh ./build-wasm.sh
 ```
 
 ## Usage Example
@@ -104,13 +101,21 @@ emmake make
 1. Install dependencies:
 
 ```sh
+cd wasm-examples
 npm install opencv.js
 ```
 
 2. Run the example code:
 
 ```sh
-node examples/test.js
+node test.js
+```
+
+```output result 
+Predicted Age: 28.5
+Age Interval: 25 32
+Interval Probability: 0.27939242124557495
+Detection Flag: true
 ```
 
 The example code will load the MNN model and use OpenCV to process image data for age detection.
