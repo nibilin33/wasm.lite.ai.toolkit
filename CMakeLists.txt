@@ -56,7 +56,7 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
     # 设置编译选项以生成 WASM 模块
     set_target_properties(mnn_age_googlenet.js PROPERTIES
         LINK_FLAGS "-s WASM=1 -s MODULARIZE=1 -s 'EXPORT_NAME=\"MNNAgeGoogleNetModule\"' \
-                    -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] -s ALLOW_MEMORY_GROWTH=1 -s ENVIRONMENT=node"
+                    -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap','FS_createDataFile'] -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s ENVIRONMENT=node"
         OUTPUT_NAME "mnn_age_googlenet"
     )
 endif()
