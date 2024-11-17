@@ -62,24 +62,29 @@ git clone https://github.com/nibilin33/wasm.lite.ai.toolkit.git
 cd wasm.lite.ai.toolkit
 ```
 
-2. 编译 OpenCV：
+2. 编译 OpenCV wasm版：
 
 ```sh
-cd thirdparty/opencv
+git clone https://github.com/opencv/opencv.git
+cd opencv
 mkdir build
 cd build
-emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../install -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_opencv_imgcodecs=ON
+emcmake python platforms/js/build_js.py build  -DCMAKE_INSTALL_PREFIX=/xx/thirdparty/opencv  -DBUILD_TESTS=OFF \
+  -DBUILD_PERF_TESTS=OFF -DBUILD_opencv_imgcodecs=ON
 emmake make install
 ```
 
-3. 编译 MNN：
+3. 编译 MNN wasm版：
 
 ```sh
-cd thirdparty/MNN
+git clone https://github.com/alibaba/MNN.git
+cd MNN
 mkdir build
 cd build
-emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
-emmake make
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make
+cp libMNN.dylib  /xx/thirdparty/MNN/lib/
+cp -r ../include /xx/thirdparty/MNN/
 ```
 
 4. 编译项目：
