@@ -119,6 +119,7 @@ Detection Flag: true
 
 
 ## 模型转换
+[可直接用的 onnx 模型](https://github.com/onnx/models/tree/main)
 
 ```sh
 pip install -U MNN
