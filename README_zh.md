@@ -83,7 +83,7 @@ mkdir build
 cd build
 emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/xx/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake ..
 emmake make
-cp libMNN.dylib  /xx/thirdparty/MNN/lib/
+cp libMNN.a  /xx/thirdparty/MNN/lib/
 cp -r ../include /xx/thirdparty/MNN/
 ```
 
